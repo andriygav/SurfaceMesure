@@ -1,0 +1,97 @@
+\documentclass[
+aps,%
+12pt,%
+final,%
+notitlepage,%
+oneside,%
+onecolumn,%
+nobibnotes,%
+nofootinbib,% 
+superscriptaddress,%
+noshowpacs,%
+amsmath,%
+amssymb,%
+centertags]%
+{revtex4-2}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+
+\usepackage{graphicx}
+
+\newcommand*{\No}{\textnumero}
+
+\begin{document}
+
+\title{НАЗВАНИЕ СТАТЬИ,\\
+РАЗБИТОЕ НА СТРОКИ}% Разбиение на строки осуществляется командой \\
+
+\author{\firstname{П.~A.}~\surname{Первый-Автор}}
+% Здесь разбиение на строки осуществляется автоматически или командой \\
+\email{First.Author@institution.ras.ru}
+\affiliation{%
+Место работы и/или адрес первого и второго авторов
+}%
+\author{\firstname{В.~А.}~\surname{Второй-Автор}}
+\email{Second.Author@institution.ras.ru}
+\affiliation{%
+Место работы и/или адрес первого и второго авторов
+}%
+
+\author{\firstname{Т.~А.}~\surname{Третий-Автор}}
+\email{Third.Author@univ.edu}
+%\noaffiliation % если у автора место работы не указывается
+\affiliation{%
+Место работы и/или адрес третьего автора
+}%
+
+
+\author{\firstname{Ч.~А.}~\surname{Четвертый-Автор}}
+\email{Fourth.Author@inst.ras.ru}
+\affiliation{%
+Место работы и/или адрес четвертого автора
+}%
+
+\begin{abstract}
+В этом примере статьи содержатся некоторые необходимые автору
+сведения и примеры того, как набрать статью в REV\TeX~4 для
+журналов, издаваемых Международной академической издательской
+компанией \flqqНаука/Интерпериодика\frqq.
+\end{abstract}
+
+\maketitle
+
+\section{Введение}
+
+Процесс оформлении статьи с помощью REV\TeX~4 подробно описан в
+руководстве по работе с REV\TeX~4 \cite{RTeX}. Большую помощь в
+разрешениии возникших \TeX{}'нических вопросов могут оказать книги
+\cite{GG,L}.
+
+Для набора кавычек \glqqлапок\grqq используйте команды
+\verb|\glqq| и \verb|\grqq|, а для кавычек \flqq{}елочек\frqq ---
+\verb|\flqq| и \verb|\frqq|. Описание этих и других макросов
+зависящих от русского языка можно найти в \cite{babel} страницы
+29-30. Знак номера \No{} вводится командой \verb|\No|.
+
+Для статей на русском языке используется стандартная русификация
+и LH-шрифты, включенная в состав пакета \LaTeXe. Кодировка
+\TeX{}-файлов CP866 (альтернативная).
+
+Особенностью пакета REV\TeX~4 является использование rty-файла
+(см. \cite{RTeX}, стр. 15, раздел "Job Macro Package"). В файле
+maik.rty подключаются в правильном порядке необходимые пакеты
+LaTex 2e, пeреопределяются некоторые команды REVTeX 4 и LaTeX 2e,
+связанные с оформлением русского варианта статьи в МАИК. Не
+желательно использование пакетов LaTeX 2e отличных от включенных
+в maik.rty. Не вносите никаких изменений в файл maik.rty. Файл
+maik.rty необходимо разместить в директории доступной для поиска
+TeX-компилятору.
+
+
+\nocite{*}
+
+\bibliography{main}
+
+\end{document}
