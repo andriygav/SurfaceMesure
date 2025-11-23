@@ -16,41 +16,29 @@ centertags]%
 
 \usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[russian]{babel}
+\usepackage[russian,english]{babel}
 
 \usepackage{graphicx}
+\usepackage{amsthm}
 
-\newcommand*{\No}{\textnumero}
+\newtheorem{theorem}{Теорема}
+\newtheorem{lemma}[theorem]{Лемма}
+\newtheorem{definition}{Определение}
+\newtheorem{assumption}{Предположение}
+\newtheorem{property}{Свойство}
+\newtheorem{corollary}{Следствие}
+\newtheorem{remark}{Замечание}
+\newtheorem{hypothesis}{Гипотеза}
 
 \begin{document}
 
-\title{НАЗВАНИЕ СТАТЬИ,\\
-РАЗБИТОЕ НА СТРОКИ}% Разбиение на строки осуществляется командой \\
+\title{ЛАНДШАФТНАЯ МЕРА МОДЕЛЕЙ ГЛУБОКОГО ОБУЧЕНИЯ}
 
-\author{\firstname{П.~A.}~\surname{Первый-Автор}}
-% Здесь разбиение на строки осуществляется автоматически или командой \\
-\email{First.Author@institution.ras.ru}
+\author{\firstname{А.~В.}~\surname{Грабовой}}
+\email{grabovoy@ipu.ru}
 \affiliation{%
-Место работы и/или адрес первого и второго авторов
-}%
-\author{\firstname{В.~А.}~\surname{Второй-Автор}}
-\email{Second.Author@institution.ras.ru}
-\affiliation{%
-Место работы и/или адрес первого и второго авторов
-}%
-
-\author{\firstname{Т.~А.}~\surname{Третий-Автор}}
-\email{Third.Author@univ.edu}
-%\noaffiliation % если у автора место работы не указывается
-\affiliation{%
-Место работы и/или адрес третьего автора
-}%
-
-
-\author{\firstname{Ч.~А.}~\surname{Четвертый-Автор}}
-\email{Fourth.Author@inst.ras.ru}
-\affiliation{%
-Место работы и/или адрес четвертого автора
+    Московский физико-технический институт (национальный исследовательский университет) \\
+    Институт проблем управления им. В. А. Трапезникова Российской академии наук (ИПУ РАН)
 }%
 
 \begin{abstract}
@@ -64,33 +52,203 @@ centertags]%
 
 \section{Введение}
 
-Процесс оформлении статьи с помощью REV\TeX~4 подробно описан в
-руководстве по работе с REV\TeX~4 \cite{RTeX}. Большую помощь в
-разрешениии возникших \TeX{}'нических вопросов могут оказать книги
-\cite{GG,L}.
+\section{Мера сложности моделей}
 
-Для набора кавычек \glqqлапок\grqq используйте команды
-\verb|\glqq| и \verb|\grqq|, а для кавычек \flqq{}елочек\frqq ---
-\verb|\flqq| и \verb|\frqq|. Описание этих и других макросов
-зависящих от русского языка можно найти в \cite{babel} страницы
-29-30. Знак номера \No{} вводится командой \verb|\No|.
+В современной теории глубокого обучения фундаментальной проблемой является установление соответствия между сложностью модели и характеристиками данных.
+В рамках данного раздела произведем формализацию данного определения.
 
-Для статей на русском языке используется стандартная русификация
-и LH-шрифты, включенная в состав пакета \LaTeXe. Кодировка
-\TeX{}-файлов CP866 (альтернативная).
+\begin{definition}\label{chapter:complex:def-gamma}
+    Генеральной совокупностью данных~$\Gamma$ назовем произвольное множество объектов, которые исследуются в рамках той либо иной задаче. В общем случае нет никаких ограничение на счетность множества генеральной совокупности.
+\end{definition}
 
-Особенностью пакета REV\TeX~4 является использование rty-файла
-(см. \cite{RTeX}, стр. 15, раздел "Job Macro Package"). В файле
-maik.rty подключаются в правильном порядке необходимые пакеты
-LaTex 2e, пeреопределяются некоторые команды REVTeX 4 и LaTeX 2e,
-связанные с оформлением русского варианта статьи в МАИК. Не
-желательно использование пакетов LaTeX 2e отличных от включенных
-в maik.rty. Не вносите никаких изменений в файл maik.rty. Файл
-maik.rty необходимо разместить в директории доступной для поиска
-TeX-компилятору.
+Определение~\ref{chapter:complex:def-gamma} позволяет работать как с однородными, так и с многородной генеральными совокупностями.
+
+\begin{definition}\label{chapter:complex:def-gamma-modality}
+    Генеральную совокупность~$\Gamma$ назовем однородной, если все объекты генеральной совокупности порождаются из одного распределения. В противном случае выборку назовем~$k$-родной, где~$k$ является числом распределений на основе которой была сгенерирована генеральная совокупность;
+\end{definition}
+
+В определении~\ref{chapter:complex:def-gamma-modality} примером двуродной генеральной совокупности выступает выборка состоящая из текстов и из изображений в качестве объекта исследования. Например, современные большие языковые модели одновременно работают как с текстами, так и с изображениями и называются многомодальными моделями.
+
+Пусть задана генеральная совокупность данных~$\Gamma,$ где задано множество всех подмножеств объектов образующих кольцо выборок:
+\[
+    \mathfrak{D} = \{D_\Gamma^i\}, \quad D_\Gamma^i \subset \Gamma.
+\]
+
+\begin{definition}\label{chapter:complex:def-data-complexity}
+    Мерой сложности выборки назовем отображение~$\mu_D,$ такое, что: 
+    \[
+        \mu_D(D_i) : \mathfrak{D}_\Gamma \to \mathbb{R}_+,
+    \]
+    удовлетворяющее свойству:
+    \begin{align}
+        \mu_D(D_i\cup D_j) \leq \mu_D(D_i)+\mu_D(D_j),
+    \end{align}
+    где равенство достигается при условии~$D_i\cap D_j=\emptyset.$
+\end{definition}
+
+Определение~\ref{chapter:complex:def-data-complexity} является классическим определением из теории меры, удовлетворяющее свойству конечной-адитивности. Конечной-адитивности нам достаточно, так как в рамках исследований предполагается конечное число объектов при обучении моделей глубокого обучения.
+Стоит заметить, что предполагается сравнение выборок только из одной генеральной совокупности, но заметим, что этим никак не ограничивается сама генеральная совокупность и в рамках определения возможны мультимодальные генеральные совокупности.
 
 
-\nocite{*}
+Пусть задано множество параметрических аппроксимирующих моделей
+\[
+    \mathfrak{F} = \left\{f_i\right\},
+\]
+где каждое~$f_i$ является некоторым множеством параметрическим функций.
+В определении~\ref{chapter:complex:def-model} вводиться общее определение характеристики параметрического семейства функций~$f,$ которые в дальнейшем рассматриваются в качестве моделей моделей глубокого обучения.
+\begin{definition}\label{chapter:complex:def-model}
+    Мерой сложности модели~$f$ назовем отображение~$\mu_f(f_i)$:
+    \[
+        \mu_f(f_i) : \mathfrak{F} \to \mathbb{R}_+.
+    \]
+\end{definition}
+
+Заметим, что определение меры сложности модели~$f$ не является определением меры в общем случае, так как множество~$\mathfrak{F}$ не является кольцом, поэтому данная мера является некоторым отображением, которая является некоторой характеристикой сложности.
+К примеру число параметров модели удовлетворяет определению~\ref{chapter:complex:def-model}.
+
+Введя определения меры сложности как для выборки, так и для модели, перейдем к определению обучаемости модели на выборке6 которое сформулировано в определении~\ref{chapter:complex:def-model-bound-data}.
+
+\begin{definition}\label{chapter:complex:def-model-bound-data}
+    Назовем модель $f\in\mathfrak{F}$ \textit{обучаемой} на выборке $D\in\mathfrak{D},$ если 
+    \[
+        \mu_f(f)\leq \mu_D(D).
+    \]
+\end{definition}
+
+В рамках определения~\ref{chapter:complex:def-model-bound-data} не вводится никакого ограничения на качество аппроксимации модели после обучения, более подробно это будет определено для частных случаев мер в следующих разделах. Также, определение~\ref{chapter:complex:def-model-bound-data} имеет эмпирическую интерпретацию: сложность модели не должна превышать сложности данных, на которых она обучается, так как в противном случае возникает проблема переобучения, когда модель запоминает шум в данных вместо выявления значимых закономерностей.
+
+\begin{theorem}\label{chapter:complex:theorem-finetunning}
+    Если для исходной выборки~$D\in\mathfrak{D}$ выполняется условие~$\mu_f(f) \leq \mu_D(D)$, тогда для новой выборки~$D'\in\mathfrak{D}$ модель дообучаема при условии:
+    \[
+        \mu_f(f) - \mu_D(D) \leq \mu_D(D').
+    \]
+\end{theorem}
+\begin{proof}
+Доказательство основано на свойствах мер сложности и условии обучаемости модели. 
+
+По определению обучаемости модели на выборке $D$ имеем:
+\[
+    \mu_f(f) \leq \mu_D(D).
+\]
+При добавлении новых данных $D'$ к исходной выборке $D$ сложность объединенной выборки не убывает:
+\[
+    \mu_D(D) \leq \mu_D(D\cup D')
+\]
+Из свойства адитивности меры сложности выборки, получаем:
+\[
+    \mu_D(D\cup D') \leq \mu_D(D)+\mu_D(D'),
+\]
+тогда, объединяя эти три неравенства, получаем цепочку:
+\[
+    \mu_f(f) \leq \mu_D(D) \leq \mu_D(D\cup D') \leq \mu_D(D)+\mu_D(D'),
+\]
+тогда перенося $\mu_D(D)$ в левую часть, получаем окончательное неравенство:
+\[
+    \mu_f(f) - \mu_D(D) \leq \mu_D(D').
+\]
+\end{proof}
+
+Это неравенство показывает, что ``оставшаяся емкость'' модели, а именно, что разность между сложностью модели и сложностью исходных данных не превосходит сложности новых данных~$D'$, что является необходимым условием для успешного дообучения модели на новых данных.
+
+Теорема~\ref{chapter:complex:theorem-finetunning} предполагает, что мера сложности данных обладает свойством монотонности и субаддитивности. В практических приложениях эти свойства должны быть проверены для конкретных выбранных мер сложности.
+
+Таким образом, введение формальных мер сложности моделей и данных создает теоретическую основу для решения практических задач проектирования архитектур нейронных сетей, планирования экспериментов и оптимизации процессов обучения.
+
+\section{Ландшафтная мера моделей глубокого обучения}\label{chapter:complexity:loss}
+
+Рассмотрим выборку из простой генеральной совокупности~$\Gamma_C$:
+\begin{equation}
+    D = \left\{ (\mathbf{x}_i, \mathbf{y}_i) \right\}, \quad i = 1, \ldots, m, \quad \mathbf{x} \in \mathcal{X}, \ \mathbf{y} \in \mathcal{Y}, \quad D\subset \Gamma_C.
+\end{equation}
+
+Рассмотрим некоторое параметрическое отображение~$f_{\boldsymbol{\theta}}: \mathcal{X} \to \mathcal{Y},$ которое аппроксимирует условное распределение целевой переменной для заданного признакового описания объекта~$p(\mathbf{y}|\mathbf{x}).$ Параметры~$\boldsymbol{\theta}$ функции~$f_{\boldsymbol{\theta}}$ принадлежат пространству~$\mathbb{R}^{P},$ где~$P$ описывает число параметров отображения~$f_{\boldsymbol{\theta}}$.
+
+Пусть, для выбора оптимального вектора параметров~$\hat{\boldsymbol{\theta}}$ используется подход минимизации эмпирического риска:
+\begin{equation}
+    \hat{\boldsymbol{\theta}} = \arg\min_{\boldsymbol{\theta}} \mathcal{L}_m(\boldsymbol{\theta}),
+\end{equation}
+где функция эмпирического риска для выборки размера~$|D|=m$ задается в следующем виде: 
+\begin{equation}
+    \mathcal{L}_m(\boldsymbol{\theta}) = \frac{1}{m} \sum\limits_{i=1}^{m} \ell(f_{\boldsymbol{\theta}}(\mathbf{x}_i), \mathbf{y}_i) \approx \mathbb{E}_{(\mathbf{x}, \mathbf{y}) \sim p(\mathbf{x}, \mathbf{y})} \left[ \ell(f_{\boldsymbol{\theta}}(\mathbf{x}), \mathbf{y}) \right],
+\end{equation}
+где функция~$\ell\left(\mathbf{z}, \mathbf{y}\right)$ описывает ошибку на одном объекте. Далее в качестве функции~$\ell$ будут рассматриваться либо кросс-энтропийная функция ошибка либо средняя квадратическая ошибка, в зависимости от рассматриваемой задачи и архитектуры модели.
+
+Заметим, что функция эмпирического риска~$\mathcal{L}_m(\boldsymbol{\theta})$ задает некоторую поверхностью в пространстве размерности~$P.$
+Изменение значения при добавлении одного объекта
+\begin{align}\label{chapter:complex:equation-difference}
+    \mathcal{L}_{k+1}(\boldsymbol{\theta}) - \mathcal{L}_k(\boldsymbol{\theta}) &= \frac{1}{k+1}\sum_{i=1}^k\ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{i}), \mathbf{y}_{i}) - \frac{1}{k+1}\sum_{i=1}^k\ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{i}), \mathbf{y}_{i}) = \\
+    &= \frac{1}{k+1}\ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{k+1}), \mathbf{y}_{k+1})-\sum_{i=1}^{k}\frac{1}{k(k+1)}\ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{i}), \mathbf{y}_{i}) = \\
+    &= \frac{1}{k+1} \left(\ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{k+1}), \mathbf{y}_{k+1}) - \mathcal{L}_{k}(\boldsymbol{\theta})\right).
+\end{align}
+
+Дальнейшее исследования ландшафта нацелено на исследования данной разницы, причем особенно особенно интересуют предельные свойства при стремлении размера выборки к бесконечности. Для дальнейших оценок данной разности вводиться предположение~\ref{chapter:complex:assumption-local-optima-not-change}, которое в целом подтверждается на практике, но в свою очередь является достаточно сильным, что упрощает дальнейшие выкладки. Подробное данное предположение рассмотрено в работе~\cite{grabovoi2024unraveling748584228}.
+
+\begin{assumption}\label{chapter:complex:assumption-local-optima-not-change}
+    Пусть $\boldsymbol{\theta}^*$ является локальным минимумом обеих эмпирических функций потерь $\mathcal{L}_{k}(\boldsymbol{\theta})$ и $\mathcal{L}_{k+1}(\boldsymbol{\theta})$, т.е.
+    \[
+        \nabla \mathcal{L}_{k}(\boldsymbol{\theta}^*) = \nabla \mathcal{L}_{k+1}(\boldsymbol{\theta}^*) = \mathbf{0}.
+    \]
+\end{assumption}
+Содержательно, предположение \ref{chapter:complex:assumption-local-optima-not-change} имеет простую эвристическую интерпретацию, что новый объект данных является \textit{репрезентативным} для уже обученной модели~--- он не приносит ``новой информации'', а лишь уточняет ее.
+В целом при асимптотически большом объеме выборки, данное свойство не противоречит эмпирическим результатам.
+
+Воспользуемся квадратичным приближением Тейлора для упомянутых выше функций потерь в окрестности точки $\boldsymbol{\theta}^*$. Предполагаем, что разложение до второго порядка будет достаточным для изучения локального поведения. Член первого порядка обращается в ноль, поскольку градиенты $\nabla \mathcal{L}_{k}(\boldsymbol{\theta}^*)$ и $\nabla \mathcal{L}_{k+1}(\boldsymbol{\theta}^*)$ равны нулю:
+\begin{equation}\label{chapter:complex:equation-approx}
+    \mathcal{L}_{k}(\boldsymbol{\theta}) \approx \mathcal{L}_{k}(\boldsymbol{\theta}^*) + \frac{1}{2} (\boldsymbol{\theta} - \boldsymbol{\theta}^*)^\top \mathbf{H}^{(k)}(\boldsymbol{\theta}^*) (\boldsymbol{\theta} - \boldsymbol{\theta}^*),
+\end{equation}
+где введено обозначение гессиана функции $\mathcal{L}_{k}(\boldsymbol{\theta})$ по параметрам $\boldsymbol{\theta}$ в точке $\boldsymbol{\theta}^*$ как $\mathbf{H}^{(k)}(\boldsymbol{\theta}^*) \in \mathbb{R}^{P \times P}$. Более того, полный гессиан может быть записан как среднее значение гессианов отдельных членов эмпирической функции потерь:
+\[
+    \mathbf{H}^{(k)}(\boldsymbol{\theta}) = \nabla^2_{\boldsymbol{\theta}} \mathcal{L}_{k}(\boldsymbol{\theta}) = \frac{1}{k} \sum\limits_{i=1}^{k} \nabla^2_{\boldsymbol{\theta}} \ell(f_{\boldsymbol{\theta}}(\mathbf{x}_{i}), \mathbf{y}_{i}) = \frac{1}{k} \sum\limits_{i=1}^{k} \mathbf{H}_{i}(\boldsymbol{\theta}).
+\]
+
+Следовательно, используя полученное квадратичное приближение~\eqref{chapter:complex:equation-approx}, формула для разности потерь~\eqref{chapter:complex:equation-difference} принимает вид:
+\begin{align}
+    \mathcal{L}_{k+1}(\boldsymbol{\theta}) - \mathcal{L}_k(\boldsymbol{\theta}) &= \frac{1}{k+1} \left( \ell(f_{\boldsymbol{\theta}^*}(\mathbf{x}_{k+1}), \mathbf{y}_{k+1}) - \frac{1}{k} \sum\limits_{i=1}^{k} \ell(f_{\boldsymbol{\theta}^*}(\mathbf{x}_{i}), \mathbf{y}_{i}) \right) +\\
+    &\quad+ \frac{1}{k+1} (\boldsymbol{\theta} - \boldsymbol{\theta}^*)^\top \left( \mathbf{H}_{k+1}(\boldsymbol{\theta}^*) - \frac{1}{k} \sum\limits_{i=1}^{k} \mathbf{H}_{i}(\boldsymbol{\theta}^*) \right) (\boldsymbol{\theta} - \boldsymbol{\theta}^*),
+\end{align}
+причем, используя неравенство треугольника, получаем следующую оценку:
+\begin{align}\label{chapter:complex:equation-mod-difference-full}
+    \left| \mathcal{L}_{k+1}(\boldsymbol{\theta}) - \mathcal{L}_k(\boldsymbol{\theta}) \right| &\leqslant \frac{1}{k+1} \left| \ell(f_{\boldsymbol{\theta}^*}(\mathbf{x}_{k+1}), \mathbf{y}_{k+1}) - \frac{1}{k} \sum\limits_{i=1}^{k} \ell(f_{\boldsymbol{\theta}^*}(\mathbf{x}_{i}), \mathbf{y}_{i}) \right| +\\
+    &\quad+ \frac{1}{k+1} \left\|\boldsymbol{\theta} - \boldsymbol{\theta}^*\right\|_2^2 \left\| \mathbf{H}_{k+1}(\boldsymbol{\theta}^*) - \frac{1}{k} \sum\limits_{i=1}^{k} \mathbf{H}_{i}(\boldsymbol{\theta}^*) \right\|_2.
+\end{align}
+
+Заметим, что первое слагаемое может быть легко ограничено константой, поскольку сама функция потерь принимает ограниченные значения.
+Однако выражение с гессианами не так просто оценить.
+Таким образом, анализ локальной сходимости ландшафта функции потерь, основан на ее матрице Гессе.
+Частные случаи аппроксимации матрицы Гессе для полносвязной модели глубокого обучения, а также для сверточных сетей в работах~\cite{grabovoi2024unraveling748584228, grabovoi2024convnets743111032}.
+
+Получаем выражение для анализа, описывающее поведение ландшафта функции потерь:
+\begin{equation}\label{chapter:complex:equation-mod-difference}
+    \left| \mathcal{L}_{k+1}(\boldsymbol{\theta}) - \mathcal{L}_k(\boldsymbol{\theta}) \right| \leqslant \frac{M_l}{k+1}+ \frac{1}{k+1} \left\|\boldsymbol{\theta} - \boldsymbol{\theta}^*\right\|_2^2 \left\| \mathbf{H}_{k+1}(\boldsymbol{\theta}^*) - \frac{1}{k} \sum\limits_{i=1}^{k} \mathbf{H}_{i}(\boldsymbol{\theta}^*) \right\|_2.
+\end{equation}
+
+Таким образом получили, что анализ сходимости ландшафта оптимизационной задачи сводится к анализу нормы матрицы Гессе.
+Оценка~\ref{chapter:complex:equation-mod-difference} задает некоторое свойство параметрического семейства функций~$f$ на заданной выборке~$D.$
+Определим данное свойство как условную сложность модели~$f$ на выборке~$D:$
+\begin{equation}\label{chapter:complex:equantion-subcomplex-model}
+    \mu_f(f|D) : \mathfrak{F} \to \mathbb{R}_+,
+\end{equation}
+причем, более подробно рассмотрим частный случай условной меры сложности параметрического семейства функций~$f$ вида:
+\begin{equation}\label{chapter:complex:equantion-subcomplex-model-surface}
+    \mu_f(f|D) = \mathsf{E}_{\mathbf{x}_i\in D}\left\| \mathbf{H}_{i}(\boldsymbol{\theta}^*) -  \mathsf{E}_{\mathbf{x}_i\in D}\mathbf{H}_{i}(\boldsymbol{\theta}^*) \right\|_2.
+\end{equation}
+
+\begin{definition}\label{chapter:complex:definition-subcomplex-model}
+    Условной сложностью параметрической модели~$f$ относительно заданной выборки~$D$ назовем отображение~\eqref{chapter:complex:equantion-subcomplex-model}.
+\end{definition}
+
+\begin{definition}\label{chapter:complex:definition-subcomplex-model-surface}
+    Ландшафтноя мерой сложности параметрической функции~$f$ назовем условную сложность параметрической модели~$f$ заданной выражением~\eqref{chapter:complex:equantion-subcomplex-model-surface}.
+\end{definition}
+
+Определение~\ref{chapter:complex:definition-subcomplex-model} описывает прикладный способ задания сложности на параметрических семействах функций в контексте оптимизации на заданных выборках.
+Причем, условная сложность модели~$\mu_f(f|D)$ характеризует сложность архитектуры модели~$f$ при ее обучении на выборке данных $D$.
+Это позволяет количественно оценить, насколько модель ``соответствует'' данным.
+Так слишком простая модель может недообучаться, а слишком сложная~--- переобучаться.
+
+\section{Заключение}
+
+
 
 \bibliography{main}
 
